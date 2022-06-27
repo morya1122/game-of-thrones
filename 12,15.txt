@@ -1,0 +1,103 @@
+Java Android Program to demonstrate login form with validation.
+_________________________________________________
+ActivityMain.xml
+__________________________________________________
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ xmlns:app="http://schemas.android.com/apk/res-auto"
+ xmlns:tools="http://schemas.android.com/tools"
+ android:layout_width="match_parent"
+ android:layout_height="match_parent"
+ android:background="@color/teal_700"
+ tools:context=".MainActivity">
+ <LinearLayout
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:orientation="vertical"
+ android:layout_marginLeft="16dp"
+ android:layout_marginRight="16dp"
+ android:layout_centerInParent="true">
+ <EditText
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:hint="Enter Email"
+ android:id="@+id/et1"/>
+ <EditText
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:hint="Enter Password"
+ android:id="@+id/et2"
+ android:inputType="textPassword"
+ />
+ <Button
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:text="Login"
+ android:background="#3f76ff"
+ android:textColor="#fff"
+ android:id="@+id/b"/>
+
+ <TextView
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:text="Not a member? Sign in"
+ android:textAlignment="center"
+ android:textSize="30dp"/>
+ </LinearLayout>
+</RelativeLayout>
+________________________________________________________
+MainActivity.java
+_____________________________________________________
+package com.example.myassignment_1;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
+public class MainActivity extends AppCompatActivity {
+ @Override
+ protected void onCreate(Bundle savedInstanceState) {
+ super.onCreate(savedInstanceState);
+ setContentView(R.layout.activity_main);
+ EditText et1 = (EditText) findViewById(R.id.et1);
+ EditText et2 = (EditText) findViewById(R.id.et2);
+ Button b = (Button) findViewById(R.id.b);
+ AwesomeValidation av = new AwesomeValidation(ValidationStyle.BASIC);
+ b.setOnClickListener(new View.OnClickListener() {
+ @Override
+ public void onClick(View view) {
+
+ {
+ String e1 = et1.getText().toString();
+ String e2 = et1.getText().toString();
+ av.addValidation(et1, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",
+"invalid");
+ av.addValidation(et2, "\"[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$\"",
+"wrong pass");
+ if(e1.equals("")||e2.equals(""))
+ {
+ Toast toast = Toast.makeText(getApplicationContext(), "Invalid emailid ",
+Toast.LENGTH_SHORT);
+ toast.setMargin(50, 50);
+ toast.show();
+ }
+ else
+ {
+ if (et1.equals("abc@gmail.com")) {
+ if (et2.equals("abc12356")) {
+ av.validate();
+ {
+ Toast toast = Toast.makeText(getApplicationContext(), "Invalid
+pass ", Toast.LENGTH_SHORT);
+ toast.setMargin(50, 50);
+ toast.show();
+ }
+ }
+ }
+ }
+ }
+ }
+});}}

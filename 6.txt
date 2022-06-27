@@ -1,0 +1,132 @@
+Create a java android application that creates alarm clock. 
+
+_______________________________________________________________________________________________
+XML
+_______________________________________________________________________________________________
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="392dp"
+        android:layout_height="481dp"
+        android:amPmBackgroundColor="@android:color/secondary_text_light_nodisable"
+        android:amPmTextColor="@android:color/darker_gray"
+        android:numbersBackgroundColor="@android:color/holo_blue_dark"
+        android:numbersSelectorColor="@color/purple_200"
+        android:numbersTextColor="@android:color/primary_text_dark"
+        android:padding="10dp"
+        android:timePickerMode="clock"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.157"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.224" />
+
+    <!--TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Time : "
+        android:textColor="#DD7E61"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="129dp"
+        tools:layout_editor_absoluteY="16dp"
+        tools:ignore="MissingConstraints"
+        -->
+
+    <Button
+        android:id="@+id/btnSetAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/teal_200"
+        android:text="SET ALARM"
+        android:onClick="setTimer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker"
+        android:textStyle="bold"
+        app:layout_constraintVertical_bias="0.26" />
+</android.support.constraint.ConstraintLayout>
+_______________________________________________________________________________________________
+MainActivity.java
+_______________________________________________________________________________________________
+package com.example.a5q3;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity
+{
+    TimePicker tp;
+    //TextView tv;
+    int mhour=0, mmin=0;
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        tp = findViewById(R.id.timePicker);
+       // tv= findViewById(R.id.timeTextView);
+
+        tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener()
+        {
+            @Override
+            public void onTimeChanged(TimePicker timePicker, int i, int i1)
+            {
+                 mhour = i;
+                 mmin = i1;
+                 //tv.setText(tv.getText().toString() + " "+ mhour + ":" + mmin);
+            }
+        });
+    }
+
+    public void setTimer(View v)
+    {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Date date = new Date();
+        Calendar cal_alarm = Calendar.getInstance();
+        Calendar cal_now  = Calendar.getInstance();
+
+        cal_now.setTime(date);
+        cal_alarm.setTime(date);
+
+        cal_alarm.set(Calendar.HOUR_OF_DAY, mhour);
+        cal_alarm.set(Calendar.MINUTE,mmin);
+        cal_alarm.set(Calendar.SECOND,0);
+
+        if(cal_alarm.before(cal_now))
+        {
+            cal_alarm.add(Calendar.DATE, 1 );
+        }
+
+        Intent i = new Intent(MainActivity.this, MyBroadCastReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this,24444,i,0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,cal_alarm.getTimeInMillis(),pi);
+
+    }
+}
